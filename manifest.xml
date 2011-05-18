@@ -1,0 +1,11 @@
+<package>
+  <description brief="RTT Yarp Transport">
+	Yarp transport for the Orocos toolchain
+  </description>
+  <author>Charles Lesire/charles.lesire@onera.fr</author>
+  <license>BSD</license>
+  
+  <depend package="rtt"/>
+  <depend package="libyarp"/>
+</package>
+
