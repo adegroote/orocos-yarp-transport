@@ -28,7 +28,7 @@
 template<class T>
 class YarpTemplateProtocol : public RTT::types::TypeTransporter {
 public:
-	virtual RTT::base::ChannelElementBase* createStream(RTT::base::PortInterface* port, const RTT::ConnPolicy& policy, bool is_sender) const {
+	virtual RTT::base::ChannelElementBase::shared_ptr createStream(RTT::base::PortInterface* port, const RTT::ConnPolicy& policy, bool is_sender) const {
 		try {
 			RTT::base::ChannelElementBase* yarp = new YarpChannelElement<T>(port, policy, is_sender);
 			if (!yarp) throw std::runtime_error("Yarp channel element is void :(");

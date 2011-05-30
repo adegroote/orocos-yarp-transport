@@ -75,19 +75,20 @@ public:
 	virtual bool data_sample(typename RTT::base::ChannelElement<T>::param_t sample) { return true; }
 
 	bool signal()
-	{		
+	{
+		typename RTT::internal::ValueDataSource<T>::shared_ptr sample;
 		if (send) {
-			typename RTT::base::ChannelElement<T>::value_t sample;
 			// this read should always succeed since signal() means 'data available in a data element'.
-         typename RTT::base::ChannelElement<T>::shared_ptr input = boost::static_pointer_cast< RTT::base::ChannelElement<T> >(this->getInput());
-			if (send && input->read(sample) == RTT::NewData)
-				return this->write(sample);
+        	typename RTT::base::ChannelElement<T>::shared_ptr input =
+				boost::static_pointer_cast< RTT::base::ChannelElement<T> >(this->getInput());
+			if (send && input->read(sample->set(), false) == RTT::NewData)
+				return this->write(sample->rvalue());
 		}
 		else {
-			typename RTT::base::ChannelElement<T>::value_t sample;
-         typename RTT::base::ChannelElement<T>::shared_ptr output = boost::static_pointer_cast< RTT::base::ChannelElement<T> >(this->getOutput());
-         if (this->read(sample) == RTT::NewData && output)
-				return output->write(sample);
+			typename RTT::base::ChannelElement<T>::shared_ptr output = 
+				boost::static_pointer_cast< RTT::base::ChannelElement<T> >(this->getOutput());
+			if (this->read(sample->set(), false) == RTT::NewData && output)
+				return output->write(sample->rvalue());
 		}
 		return false;
 	}
@@ -114,7 +115,7 @@ public:
 		this->signal();
 	}
 
-	RTT::FlowStatus read(typename RTT::base::ChannelElement<T>::reference_t sample)
+	RTT::FlowStatus read(typename RTT::base::ChannelElement<T>::reference_t sample, bool copy_old_date)
 	{
 		try {
 			yarp_bottle_iarchive arch(m_b);
