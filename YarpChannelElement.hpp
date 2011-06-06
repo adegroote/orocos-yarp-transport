@@ -34,9 +34,14 @@ class YarpChannelElement: public RTT::base::ChannelElement<T>, public yarp::os::
 	yarp::os::BufferedPort<yarp::os::Bottle> yarp_port;
 	bool newdata, send;
 	yarp::os::Bottle m_b;
+	/** Used as a temporary on the reading side */
+	typename RTT::internal::ValueDataSource<T>::shared_ptr read_sample;
+
 public:
 	YarpChannelElement(RTT::base::PortInterface* port, const RTT::ConnPolicy& policy, bool is_sender) :
-		newdata(false), send(is_sender)
+		newdata(false)
+		, send(is_sender)
+		, read_sample(new RTT::internal::ValueDataSource<T>)
 	{
 		// Check Network connection
 		if (! yarpNet.checkNetwork()) {
@@ -76,19 +81,18 @@ public:
 
 	bool signal()
 	{
-		typename RTT::internal::ValueDataSource<T>::shared_ptr sample;
 		if (send) {
 			// this read should always succeed since signal() means 'data available in a data element'.
         	typename RTT::base::ChannelElement<T>::shared_ptr input =
 				boost::static_pointer_cast< RTT::base::ChannelElement<T> >(this->getInput());
-			if (send && input->read(sample->set(), false) == RTT::NewData)
-				return this->write(sample->rvalue());
+			if (send && input->read(read_sample->set(), false) == RTT::NewData)
+				return this->write(read_sample->rvalue());
 		}
 		else {
 			typename RTT::base::ChannelElement<T>::shared_ptr output = 
 				boost::static_pointer_cast< RTT::base::ChannelElement<T> >(this->getOutput());
-			if (this->read(sample->set(), false) == RTT::NewData && output)
-				return output->write(sample->rvalue());
+			if (this->read(read_sample->set(), false) == RTT::NewData && output)
+				return output->write(read_sample->rvalue());
 		}
 		return false;
 	}

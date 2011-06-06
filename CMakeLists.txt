@@ -12,7 +12,7 @@ cmake_minimum_required(VERSION 2.6.3)
 # macro, except for orocos_typekit, where the target is fully
 # controlled by generated code of 'typegen'.
 #
-project(rtt-transport-yarp)
+project(yarp-transport)
 
 # Set the CMAKE_PREFIX_PATH in case you're not using Orocos through ROS
 # for helping these find commands find RTT.
@@ -44,28 +44,28 @@ endif(NOT DEFINED YARP_FOUND)
 #
 set(AC_INSTALL_DIR lib/orocos/types)
 if ( ${OROCOS_TARGET} STREQUAL "gnulinux" OR ${OROCOS_TARGET} STREQUAL "lxrt" OR ${OROCOS_TARGET} STREQUAL "xenomai")
-	set( LIB_NAME rtt-transport-yarp-${OROCOS_TARGET})
+	set( LIB_NAME ${PROJECT_NAME}-${OROCOS_TARGET})
 else()
-	set( LIB_NAME rtt-transport-yarp)
+	set( LIB_NAME ${PROJECT_NAME})
 endif()
-MESSAGE( "Building library rtt-transport-yarp" )
-ADD_LIBRARY( rtt-transport-yarp SHARED YarpTransport.cpp )
-SET_TARGET_PROPERTIES( rtt-transport-yarp PROPERTIES
+message( "Building library ${PROJECT_NAME}" )
+add_library( ${PROJECT_NAME} SHARED YarpTransport.cpp )
+set_target_properties( ${PROJECT_NAME} PROPERTIES
 	OUTPUT_NAME ${LIB_NAME}
 	INSTALL_RPATH_USE_LINK_PATH 1
 	LINK_FLAGS ${USE_OROCOS_LINK_FLAGS}
 )
-TARGET_LINK_LIBRARIES( rtt-transport-yarp ${OROCOS-RTT_LIBRARIES} )
-INSTALL(TARGETS rtt-transport-yarp LIBRARY DESTINATION ${AC_INSTALL_DIR})
-LINK_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR} )
+target_link_libraries( ${PROJECT_NAME} ${OROCOS-RTT_LIBRARIES} )
+install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${AC_INSTALL_DIR})
+link_directories( ${CMAKE_CURRENT_BINARY_DIR} )
 
 #
 # Test file
 #
-#if(ENABLE_TESTING)
-if(FALSE)
-	add_executable(FooTest testing/FooTest.cpp)
-	add_test(YarpTransport FooTest)
+if(ENABLE_TESTING)
+	orocos_executable(FooTest testing/FooTest.cpp)
+	target_link_libraries(FooTest ${PROJECT_NAME})
+	add_test(YarpTransport FooTest-${OROCOS_TARGET})
 endif()
 
 #
