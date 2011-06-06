@@ -1,0 +1,43 @@
+program test {
+	var string s
+	cout.display("*** Starting Yarp test ***")
+	yield
+	
+	Hello.the_results.write("Hello World")
+	cout.log("Hello has written \"Hello World\"")
+	yield
+	
+	if (World.the_buffer_port.read(s) == NewData && s == "Hello World") then 
+		cout.log("World has received \"Hello World\"")
+	else error
+	yield
+
+	Hello.the_results.write("Hello")
+	cout.log("Hello has written \"Hello\"")
+	yield
+	
+	Hello.the_results.write("World")
+	cout.log("Hello has written \"World\"")
+	yield
+	
+	Hello.the_results.write("Hello World")
+	cout.log("Hello has written \"Hello World\"")
+	yield
+
+	if (World.the_buffer_port.read(s) == NewData && s == "Hello") then 
+		cout.log("World has received \"Hello\"")
+	else error
+	yield
+	
+	if (World.the_buffer_port.read(s) == NewData && s == "World") then 
+		cout.log("World has received \"World\"")
+	else error
+	yield
+	
+	if (World.the_buffer_port.read(s) == OldData) then
+		cout.log("World buffer has no more new data -- buffer size is 2")
+	else error
+	yield
+	
+	cout.display("*** Test Successful ***")
+}

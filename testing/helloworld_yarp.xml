@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE properties SYSTEM "cpf.dtd">
+<properties>
+	<struct name="YarpStringC" type="ConnPolicy">
+		<simple name="type" type="short"><value>1</value></simple><!-- Type is 'shared data' or buffered: DATA: 0 , BUFFER: 1 -->
+		<simple name="size" type="short"><value>2</value></simple><!-- Type is 'shared data' or buffered: DATA: 0 , BUFFER: 1 -->
+		<simple name="transport" type="short"><value>89</value></simple><!-- Transport #89 is Yarp -->
+		<simple name="name_id" type="string"><value>HelloTopic</value></simple>
+	</struct>
+
+	<struct name="cout" type="OCL::HMIConsoleOutput">
+		<simple name="AutoStart" type="boolean"><value>1</value></simple>
+	</struct>
+	
+	<struct name="Hello" type="OCL::HelloWorld">
+		<simple name="AutoStart" type="boolean"><value>1</value></simple>
+		<struct name="Ports" type="PropertyBag">
+			<simple name="the_results" type="string"><value>YarpStringC</value></simple>
+		</struct>
+	</struct>
+
+	<struct name="World" type="OCL::HelloWorld">
+		<simple name="AutoStart" type="boolean"><value>1</value></simple>
+		<struct name="Ports" type="PropertyBag">
+			<simple name="the_buffer_port" type="string"><value>YarpStringC</value></simple>
+		</struct>
+	</struct>
+	
+	<struct name="Deployer">
+		<struct name="Activity" type="Activity">
+			<simple name="Period" type="double"><value>1</value></simple>
+			<simple name="Priority" type="short"><value>0</value></simple>
+		</struct>
+		<simple name="Service" type="string"><value>scripting</value></simple>
+		<simple name="ProgramScript" type="string"><value>test.ops</value></simple>	
+		<simple name="AutoStart" type="boolean"><value>1</value></simple>
+	</struct>
+</properties>
