@@ -2,11 +2,11 @@ prefix=@CMAKE_INSTALL_PREFIX@
 libdir=${prefix}/lib
 includedir=${prefix}/include
 
-Name: orocos-rtt-yarp
+Name: orocos-yarp-transport
 Description: Orocos Yarp Transport
-Requires: orocos-rtt-@OROCOS_TARGET@
+Requires: rtt
 Version: 1.0.0
 
-Libs: -L${libdir} -L${libdir}/orocos -l${libdir}/liborocos-rtt-yarp-@OROCOS_TARGET@.so
+Libs: -L${libdir} -L${libdir}/orocos -L${libdir}/orocos/types -lyarp-transport-@OROCOS_TARGET@ -lYARP_OS -lYARP_init -lYARP_name
 Libs.private:
-Cflags: -I${includedir} -I${includedir}/orocos/transports
+Cflags: -I${includedir} -I${includedir}/orocos/yarp-transport

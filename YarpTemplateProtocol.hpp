@@ -1,5 +1,5 @@
 /**
- * Copyright (C) ONERA 2010
+ * Copyright (C) ONERA 2010-2011
  * Version: 1.0
  * Author: Charles Lesire <charles.lesire@onera.fr>
  * 
