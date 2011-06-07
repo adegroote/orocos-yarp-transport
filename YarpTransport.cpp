@@ -27,25 +27,28 @@
 struct YarpLibPlugin : public RTT::types::TransportPlugin {
 
 	bool registerTransport(std::string name, RTT::types::TypeInfo* ti) {
-		assert( name == ti->getTypeName() );
-		if ( name == "int" )
-			return ti->addProtocol(ORO_YARP_PROTOCOL_ID, new YarpTemplateProtocol<int>() );
-		if ( name == "string" )
-			return ti->addProtocol(ORO_YARP_PROTOCOL_ID, new YarpTemplateProtocol<std::string>() );
+		if ( name == "array" )
+			return ti->addProtocol(ORO_YARP_PROTOCOL_ID, new YarpTemplateProtocol< std::vector<double> >() );
+		if ( name == "bool" )
+			return ti->addProtocol(ORO_YARP_PROTOCOL_ID, new YarpTemplateProtocol<bool>() );
+		//if ( name == "bools" )
+		//	return ti->addProtocol(ORO_YARP_PROTOCOL_ID, new YarpTemplateProtocol<std::vector<bool> >() );
+		if ( name == "char" )
+			return ti->addProtocol(ORO_YARP_PROTOCOL_ID, new YarpTemplateProtocol<char>() );
 		if ( name == "double" )
 			return ti->addProtocol(ORO_YARP_PROTOCOL_ID, new YarpTemplateProtocol<double>() );
 		if ( name == "float" )
 			return ti->addProtocol(ORO_YARP_PROTOCOL_ID, new YarpTemplateProtocol<float>() );
-		if ( name == "char" )
-			return ti->addProtocol(ORO_YARP_PROTOCOL_ID, new YarpTemplateProtocol<char>() );
+		if ( name == "int" )
+			return ti->addProtocol(ORO_YARP_PROTOCOL_ID, new YarpTemplateProtocol<int>() );
+		if ( name == "ints" )
+			return ti->addProtocol(ORO_YARP_PROTOCOL_ID, new YarpTemplateProtocol<std::vector<int> >() );
+		if ( name == "string" )
+			return ti->addProtocol(ORO_YARP_PROTOCOL_ID, new YarpTemplateProtocol<std::string>() );
+		if ( name == "strings" )
+			return ti->addProtocol(ORO_YARP_PROTOCOL_ID, new YarpTemplateProtocol<std::vector<std::string> >() );
 		if ( name == "uint" )
 			return ti->addProtocol(ORO_YARP_PROTOCOL_ID, new YarpTemplateProtocol<unsigned int>() );
-		if ( name == "long" )
-			return ti->addProtocol(ORO_YARP_PROTOCOL_ID, new YarpTemplateProtocol<long>() );
-		if ( name == "bool" )
-			return ti->addProtocol(ORO_YARP_PROTOCOL_ID, new YarpTemplateProtocol<bool>() );
-		if ( name == "array" )
-			return ti->addProtocol(ORO_YARP_PROTOCOL_ID, new YarpTemplateProtocol< std::vector<double> >() );
 		return false;
 	}
       
@@ -58,7 +61,7 @@ struct YarpLibPlugin : public RTT::types::TransportPlugin {
 	}
 
 	std::string getName() const {
-		return "rtt-yarp-transport";
+		return "yarp-transport";
 	}
 
 };
