@@ -35,7 +35,6 @@ endif()
 #
 if(NOT DEFINED YARP_FOUND)
 	find_package(YARP REQUIRED)
-	link_libraries(${YARP_LIBRARIES})
 	include_directories(${YARP_INCLUDE_DIRS})
 endif(NOT DEFINED YARP_FOUND)
 
@@ -55,7 +54,7 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES
 	INSTALL_RPATH_USE_LINK_PATH 1
 	LINK_FLAGS ${USE_OROCOS_LINK_FLAGS}
 )
-target_link_libraries( ${PROJECT_NAME} ${OROCOS-RTT_LIBRARIES} )
+target_link_libraries( ${PROJECT_NAME} ${OROCOS-RTT_LIBRARIES} ${YARP_LIBRARIES})
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${AC_INSTALL_DIR})
 link_directories( ${CMAKE_CURRENT_BINARY_DIR} )
 
