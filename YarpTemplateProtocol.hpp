@@ -30,7 +30,7 @@ class YarpTemplateProtocol : public RTT::types::TypeTransporter {
 public:
 	virtual RTT::base::ChannelElementBase::shared_ptr createStream(RTT::base::PortInterface* port, const RTT::ConnPolicy& policy, bool is_sender) const {
 		try {
-			RTT::base::ChannelElementBase* yarp = new YarpChannelElement<T>(port, policy, is_sender);
+			RTT::base::ChannelElementBase::shared_ptr yarp = new YarpChannelElement<T>(port, policy, is_sender);
 			if (!yarp) throw std::runtime_error("Yarp channel element is void :(");
 			if (!is_sender) {
 				// the receiver needs a buffer to store his messages in.

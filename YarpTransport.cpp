@@ -18,11 +18,12 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <rtt/types/TransportPlugin.hpp>
+#include <rtt/types/TypekitPlugin.hpp>
+
 #include "YarpTransport.hpp"
 #include "YarpChannelElement.hpp"
 #include "YarpTemplateProtocol.hpp"
-#include <rtt/types/TransportPlugin.hpp>
-#include <rtt/types/TypekitPlugin.hpp>
 
 struct YarpLibPlugin : public RTT::types::TransportPlugin {
 
