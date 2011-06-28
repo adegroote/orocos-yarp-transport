@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<article xmlns="http://docbook.org/ns/docbook" 
+      xmlns:xlink="http://www.w3.org/1999/xlink" 
+      version="5.0">
+<title>The YARP transport for Orocos RTT</title>
+
+<section>
+<title>Overview</title>
+<para>
+The YARP transport for Orocos provides a Communication framework to connect ports of components using the YARP middleware.
+</para>
+
+<section><title>Caveats</title></section>
+<itemizedlist>
+<listitem>The YARP transport is NOT real-time (even used to connect ports in the same process); However, it will not break the realtimeness or your real-time components (except is you resize your dynamic size arrays, see 
+<xref linkend="types"/>).</listitem>
+<listitem>The YARP transport uses the 
+<function>boost::serialize</function> function to (de)compose types and map them into YARP bottles; this behavior is not suited to big data that would typically be sent as binary data.</listitem>
+</itemizedlist>
+
+<section><title>Requirements and installation</title>
+<para>
+The only requirement is to install both the Orocos toolchain and YARP. The privileged installation setup uses <command>autoproj</command> to manage YARP and the YARP transport dependencies.
+</para>
+
+<section><title>Using Autoproj</title>
+If you have installed your Orocos environment using Autoproj, you can directly ask Autoproj to also manage the installation of YARP and the YARP transport. Edit your <filename>$OROCOS_ROOT/autoproj/manifest</filename> file and add :
+<itemizedlist>
+<listitem>in the <function>package_sets</function> section:
+	<programlisting>
+  - type: git
+    url: $GITORIOUS_ROOT/orocos-communication/package_set.git
+	</programlisting>
+</listitem>
+<listitem>in the <function>layout</function> section:
+	<programlisting>
+  - yarp-transport
+	</programlisting>
+</listitem>
+<listitem>if YARP is already installed on your system and you do not want Autoproj to download and install it on your Orocos install tree, in the <function>ignore_pacakges</function> section:
+	<programlisting>
+  - libyarp
+	</programlisting>
+</listitem>
+</itemizedlist>
+Then just <prompt>autoproj update</prompt> and <prompt>autoproj build yarp-transport</prompt> will download, build and install the YARP transport and its dependencies.
+
+</section>
+
+<section><title>Manual installation</title>
+<para>
+YARP installation instructions can be found at <link xlink:href="http://eris.liralab.it/yarpdoc/install.html"/>.
+It is recommended to build YARP with the following options:
+<itemizedlist>
+<listitem><option>CREATE_SHARED_LIBRARY=ON</option></listitem>
+<listitem><option>CREATE_YARPSERVER3=ON</option></listitem>
+<listitem><option>CREATE_GUIS=ON</option></listitem>
+</itemizedlist>
+The YARP transport can be downloaded from gitorious:
+<prompt>git clone git://gitorious.org/orocos-communication/yarp-transport</prompt>.
+The <command>cmake</command> magic should find RTT and YARP and build the transport.
+</para>
+</section>
+
+</section>
+</section>
+
+<section><title>All what to know about YARP</title>
+<para>
+YARP stands for Yet Another Robot Platform. YARP supports building a robot control system as a collection of programs communicating in a peer-to-peer way, with a family of connection types (tcp, udp, multicast, local, MPI, mjpg-over-http, XML/RPC, tcpros, ...) that can be swapped in and out to match your needs.
+A complete YARP documentation with tutorials can be found at <link xlink:href="http://eris.liralab.it/yarpdoc"/>.
+</para>
+
+<section><title>YARP network</title></section>
+<para>
+YARP is tipically useful to manage data flows between components, located on different machines, running different OSes, and using different protocols.
+<xref linkend="yarpnet"/> shows the YARP network of such an example.
+
+<figure xml:id="yarpnet">
+<title>YARP network over different machines</title>
+<imageobject>
+<imagedata fileref="http://eris.liralab.it/yarpdoc/inline_dotgraph_3.dot.png" format="PNG"/>
+</imageobject>
+</figure>
+
+The YARP network is managed by a naming service, namely the <command>yarp server</command>.
+The YARP server knows all the declared ports and is used to (dis)connect ports, and specify the connection policy (the underlying protocol).
+</para>
+
+<para>
+A good <emphasis>first steps</emphasis> tutorial is taken from the YARP documentation:
+</para>
+<blockquote><attribution><link xlink:href="http://eris.liralab.it/yarpdoc/yarp.html"/></attribution>
+<para>
+Start four terminals, called A-D. Do the following:
+<synopsis>
+[in terminal A] yarpserver3
+[in terminal B] yarp check
+</synopsis>
+Terminal B should run some tests, then say yarp is "ok". Now do the following, leaving terminal A untouched:
+<synopsis>
+[in terminal B] yarp read /read
+[in terminal C] yarp write /write verbatim /read
+</synopsis>
+Now type some stuff into terminal C and hit return. That stuff should be echoed on terminal B. Now try:
+<synopsis>
+[in terminal D] yarp disconnect /write /read
+</synopsis>
+Now if you type stuff in terminal C, it no longer appears on B. Now try:
+<synopsis>
+[in terminal D] yarp connect /write /read
+</synopsis>
+Now if you type stuff in terminal C, it appears on B again.
+</para></blockquote>
+
+<section><title>YARP bottles</title></section>
+<para>
+YARP can transport data into bottles. A bottle is a simple collection of objects that can be described and transmitted in a portable way. Objects are stored in a list, which you can add to and access. It is handy to use until you feel the need to make your own more efficient formats for transmission. Bottles is a standard message format for YARP, allowing to use yarp services on the data coming from / going to Orocos components (such as <function>yarp read</function> or <function>yarp write</function>).
+</para>
+
+</section>
+
+<section><title>Connecting Orocos ports using YARP</title>
+
+<para>
+Connecting two Orocos ports via YARP can be done by specifying the YARP transport into the connection policy. This section presents how to do so, on several situations (inter/intra process, remote, from xml or script).
+</para>
+<para>
+Before connecting ports via YARP, you must launch the YARP server. Recommended command is
+<prompt>yarpserver3</prompt>. If you use the default <prompt>yarp server</prompt> command, you will have to manually connect ports in some situations. These are reminded here-after.
+</para>
+
+<section xml:id="types"><title>Default transportable types</title></section>
+<para>
+<xref linkend="typetable"/> shows the C++/Orocos types supported by the YARP transport, and their corresponding mapping into the YARP bottles.
+</para>
+
+<table xml:id="typetable" rules="all" frame="border">
+<caption>Default transportable types</caption>
+<thead><tr>
+	<td>C++ type</td>
+	<td>Orocos script type</td>
+	<td>YARP <emphasis>bottled</emphasis> type</td>
+</tr></thead>
+<tbody>
+	<tr><td><literal>int</literal></td>
+		<td><literal>int</literal></td>
+		<td><classname>Int</classname></td></tr>
+	<tr><td><literal>unsigned int</literal></td>
+		<td><literal>uint</literal></td>
+		<td><classname>Int</classname></td></tr>
+	<tr><td><literal>bool</literal></td>
+		<td><literal>bool</literal></td>
+		<td><classname>Int</classname></td></tr>
+	<tr><td><literal>char</literal></td>
+		<td><literal>char</literal></td>
+		<td><classname>Int</classname> (or <classname>String</classname> as input)</td></tr>
+	<tr><td><literal>float</literal></td>
+		<td><literal>float</literal></td>
+		<td><classname>Double</classname></td></tr>
+	<tr><td><literal>double</literal></td>
+		<td><literal>double</literal></td>
+		<td><classname>Double</classname></td></tr>
+	<tr><td><literal>std::string</literal></td>
+		<td><literal>string</literal></td>
+		<td><classname>String</classname></td></tr>
+	<tr><td><literal>std::vector&lt;int&gt;</literal></td>
+		<td><literal>ints</literal></td>
+		<td><classname>List</classname> of <classname>Int</classname></td></tr>
+	<tr><td><literal>std::vector&lt;double&gt;</literal></td>
+		<td><literal>array</literal></td>
+		<td><classname>List</classname> of <classname>Double</classname></td></tr>
+	<tr><td><literal>std::vector&lt;std::string&gt;</literal></td>
+		<td><literal>strings</literal></td>
+		<td><classname>List</classname> of <classname>String</classname></td></tr>
+</tbody>
+</table>
+
+<section><title>YARP connection policy</title>
+<para>
+The use of a transport in Orocos is done through the definition of a <classname>ConnPolicy</classname>. A <classname>ConnPolicy</classname> specifies the properties of the connection. Some of these properties are related to the transport, and the YARP transport is configured by:
+<itemizedlist>
+<listitem><varname>transport</varname> that must be set to <token>89</token>, that is the YARP transport id;</listitem>
+<listitem><varname>name_id</varname> that is used to define the <emphasis>topic</emphasis> to which the port will publish or subscribe to.</listitem>
+</itemizedlist>
+The <emphasis>topic</emphasis> is only useful if you use <command>yarpserver3</command> as the YARP naming service. Default YARP server does not recognize topics and persistent connections.
+</para>
+<para>
+When you define a YARP stream for your port, the YARP transport creates a new YARP port, whose name follows the expression:
+<cmdsynopsis sepchar="">
+	<command>/
+	<replaceable>host_name</replaceable>/
+	<replaceable>component_name</replaceable>/
+	<replaceable>port_name</replaceable>/
+	</command>
+</cmdsynopsis>
+Using topics will allow to have an automatic connection of YARP ports: each port is connected to the corresponding topic, leading to a persistent connection into the YARP network. I.e., ports publishing or subscribing to the topic are all connected peer to peer by the YARP server.
+</para>
+<para>
+If you cannot use topics (because you use the default <command>yarp server</command>) or do not want to use topics (beceause you want to manually manage connections), you have to connect ports by hand, using the YARP command, that moreover allows you to specify the underlying carrier of transported data:
+<cmdsynopsis>
+<command>yarp connect</command>
+<arg choice="req"><replaceable>portA</replaceable></arg>
+<arg choice="req"><replaceable>portB</replaceable></arg>
+<arg><replaceable>carrier</replaceable></arg>
+</cmdsynopsis>
+Carriers commonly supported by YARP are <varname>tcp</varname>, <varname>udp</varname>, <varname>mcast</varname> (multicast), <varname>shmem</varname> (shared memory) and <varname>text</varname> (through a text file).
+</para>
+</section>
+
+
+<section xml:id="scripting"><title>Using the YARP transport from the <command>deployer</command></title>
+<para>
+Once the YARP transport has been installed, it is by default located where the <command>deployer</command> will find it automatically at startup. If you modified the installation directory, customize the <envar>RTT_COMPONENT_PATH</envar> to indicate to the <command>deployer</command> where to find it.
+</para>
+<para>
+To use the YARP transport from the <command>deployer</command>, you have to create a new connection policy and specify to use the YARP transport :
+<programlisting>
+var ConnPolicy cp_yarp
+cp_yarp.transport = 89
+cp_yarp.name_id = "FooTopic"
+stream("Hello.the_results", cp_yarp)
+</programlisting>
+You can also set classical connection parameters (data/buffer, buffer size, lock policy, etc.)
+</para>
+<para>
+Alternatively, you can also define these connection in a script file and launch it from the deployer.
+</para>
+</section>
+
+<section xml:id="xml"><title>Using the YARP transport from an XML file</title>
+<para>
+If you use an XML file to setup your components, you can specify the same connection as above with the following code :
+<synopsis language="xml">
+&lt;struct name="YarpConn" type="ConnPolicy"&gt;
+	&lt;simple name="type" type="short"&gt;&lt;value&gt;0&lt;/value&gt;&lt;/simple&gt;
+	&lt;simple name="transport" type="short"&gt;&lt;value&gt;89&lt;/value&gt;&lt;/simple&gt;
+	&lt;simple name="name_id" type="string"&gt;&lt;value&gt;FooTopic&lt;/value&gt;&lt;/simple&gt;
+&lt;/struct&gt;
+</synopsis>
+and then indicate that your component will connect this port to the <varname>YarpConn</varname> connection :
+<synopsis language="xml">
+&lt;struct name="Hello" type="OCL::HelloWorld"&gt;
+	&lt;struct name="Ports" type="PropertyBag"&gt;
+		&lt;simple name="the_results" type="string"&gt;&lt;value&gt;YarpConn&lt;/value&gt;&lt;/simple&gt;
+	&lt;/struct&gt;
+&lt;/struct&gt;
+</synopsis>
+</para>
+</section>
+
+<section><title>Using the YARP transport from bare C++</title>
+<emphasis>TODO</emphasis>
+</section>
+
+<section><title>Remote host configuration</title>
+<para>
+When the YARP transport is used to connect ports of components that run on different machines over a network, you have to configure YARP to indicate where to find the YARP server. To do so, edit the <filename>~/.yarp/conf/yarp.conf</filename> file and enter the host and port where the server has been launched.
+</para>
+<para>
+<emphasis>Note:</emphasis> when you launch the server, it is by default configured for the <envar>localhost</envar> host. This configuration can sometimes make the server unavailable for the rest of the network. The best way to configure it is to have the same <filename>yarp.conf</filename> on all machines running YARP (either as a server or a client).
+</para>
+</section>
+
+<section><title>Intra-process connection</title>
+<para>
+The YARP transport may be used to connect ports of components that are executed in the same process. This configuration, although not useful as a mere data transport, allows to visualize, manage, and possibly filter the stream outside the process, from a YARP network.
+</para>
+<para>
+In XML file, intra-process connection is setup exactly as in inter-process connections, see <xref linkend="xml"/>. In scripting, just use <command>connect</command> instead of <command>stream</command>, see <xref linkend="scripting"/>.
+</para>
+</section>
+
+</section>
+
+<section><title>Transporting user types</title>
+<emphasis>TODO</emphasis>
+</section>
+
+</article>
