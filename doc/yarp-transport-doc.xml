@@ -277,4 +277,31 @@ In XML file, intra-process connection is setup exactly as in inter-process conne
 <emphasis>TODO</emphasis>
 </section>
 
+<section><title>Test files</title>
+<para>
+Two test cases are provided in the <filename>testing</filename> folder of the YARP transport sources. The first case is an intra-process transport defined in an XML file. To launch it, go to the <filename>testing</filename> directory, and follow the steps:
+<synopsis>
+[in terminal A] yarpserver3
+[in terminal B] deployer-gnulinux -linfo -s helloworld_yarp.xml
+  Deployer [R]> test.start()
+</synopsis>
+Files <filename>helloworld_yarp.xml</filename> and <filename>test.ops</filename> give examples of use of the YARP transport.
+</para>
+<para>
+The second case is an inter-process transport defined in two XML files. To launch it, go to the <filename>testing</filename> directory, and follow the steps:
+<synopsis>
+[in terminal A] yarpserver3
+[in terminal B] deployer-gnulinux -linfo -s helloworld_A.xml
+[in terminal C] deployer-gnulinux -linfo -s helloworld_B.xml
+[in terminal B]
+  Deployer [S]> Hello.the_results.write("Hello Yarp!")
+[in terminal C]
+  Deployer [S]> var string s
+  Deployer [S]> World.the_buffer_port.read(s)
+  Deployer [S]> s
+</synopsis>
+See files <filename>helloworld_A.xml</filename> and <filename>helloworld_B.xml</filename> for the transport configuration example.
+</para>
+</section>
+
 </article>
