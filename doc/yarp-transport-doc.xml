@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
-<article><!-- xmlns="http://docbook.org/ns/docbook" version="5.0"
-      xmlns:xlink="http://www.w3.org/1999/xlink">-->
+<article>
 <articleinfo>
   <author><firstname>Charles</firstname><surname>Lesire-Cabaniols</surname></author>
   <authorinitials>clc</authorinitials>
