@@ -54,17 +54,20 @@ If you have installed your Orocos environment using Autoproj, you can directly a
 <itemizedlist>
 <listitem><para>in the <function>package_sets</function> section:
   <programlisting>
+package_sets:
   - type: git
     url: $GITORIOUS_ROOT/orocos-communication/package_set.git
   </programlisting>
 </para></listitem>
 <listitem><para>in the <function>layout</function> section:
   <programlisting>
+layout:
   - yarp-transport
   </programlisting>
 </para></listitem>
-<listitem><para>if YARP is already installed on your system and you do not want Autoproj to download and install it on your Orocos install tree, in the <function>ignore_pacakges</function> section:
+<listitem><para>if YARP is already installed on your system and you do not want Autoproj to download and install it on your Orocos install tree, in the <function>ignore_packages</function> section:
   <programlisting>
+ignore_packages:
   - libyarp
   </programlisting>
 </para></listitem>
