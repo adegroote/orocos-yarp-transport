@@ -6,6 +6,6 @@
   <license>BSD</license>
   
   <depend package="rtt"/>
-  <depend package="libyarp"/>
+  <depend package="yarp"/>
 </package>
 
