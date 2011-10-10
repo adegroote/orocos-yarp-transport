@@ -54,7 +54,7 @@ struct YarpLibPlugin : public RTT::types::TransportPlugin {
 	}
       
 	std::string getTransportName() const {
-		return "yarp";
+		return "YARP";
 	}
       
 	std::string getTypekitName() const {

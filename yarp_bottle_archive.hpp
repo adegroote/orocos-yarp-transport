@@ -168,12 +168,14 @@ public:
 
 	template<class T>
 	yarp_bottle_iarchive& operator>>(std::vector<T>& t) {
-		if (!m_bottle.get(0).isList())
-			throw barch::archive_exception(
-					barch::archive_exception::unregistered_cast);
-		yarp::os::Bottle* b = m_bottle.get(0).asList();
+        // Two ways of receiving a vector: as a sublist, or as bare T elements
+        yarp::os::Bottle* b;
+        if (m_bottle.get(0).isList())
+            b = m_bottle.get(0).asList();
+        else
+            b = &m_bottle;
 		yarp_bottle_iarchive v(*b);
-		t.resize(b->size());
+        t.resize(b->size());
 		for (typename std::vector<T>::iterator i = t.begin(); i != t.end(); i++)
 			v >> (*i);
 		m_bottle = m_bottle.tail();

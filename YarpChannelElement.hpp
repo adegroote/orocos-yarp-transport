@@ -138,7 +138,8 @@ public:
 	RTT::FlowStatus read(
 			typename RTT::base::ChannelElement<T>::reference_t sample,
 			bool copy_old_date) {
-		try {
+        RTT::Logger::In("YarpChannel");
+        try {
 			yarp_bottle_iarchive arch(m_b);
 			arch >> sample;
 			if (newdata) {
