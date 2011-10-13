@@ -41,7 +41,7 @@ endif(NOT DEFINED YARP_FOUND)
 #
 # Building the Yarp toolkit
 #
-set(AC_INSTALL_DIR lib/orocos/types)
+set(AC_INSTALL_DIR lib/orocos/${OROCOS_TARGET}/types)
 if ( ${OROCOS_TARGET} STREQUAL "gnulinux" OR ${OROCOS_TARGET} STREQUAL "lxrt" OR ${OROCOS_TARGET} STREQUAL "xenomai")
 	set( LIB_NAME ${PROJECT_NAME}-${OROCOS_TARGET})
 else()
