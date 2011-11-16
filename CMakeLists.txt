@@ -85,6 +85,7 @@ set(PC_LIBS "${PC_LIBS} -L\${libdir} ${OROCOS_DEFINED_LIBS}")
 set(PC_LIBS "${PC_LIBS} -L\${orocos_libdir} ${OROCOS_DEFINED_COMPS}")
 set(PC_LIBS "${PC_LIBS} -L\${orocos_libdir}/plugins ${OROCOS_DEFINED_PLUGINS}")
 set(PC_LIBS "${PC_LIBS} -L\${orocos_libdir}/types ${OROCOS_DEFINED_TYPES}")
+set(PC_LIBS "${PC_LIBS} -lYARP_OS -lYARP_init")
 set(PC_PREFIX ${CMAKE_INSTALL_PREFIX})
 set(PC_LIB_DIR "\${libdir}/orocos${OROCOS_SUFFIX}/${PROJECT_NAME}")
 set(PC_CONTENTS "prefix=@PC_PREFIX@
