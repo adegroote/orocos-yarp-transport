@@ -31,8 +31,6 @@
 			<simple name="Period" type="double"><value>1</value></simple>
 			<simple name="Priority" type="short"><value>0</value></simple>
 		</struct>
-		<simple name="Service" type="string"><value>scripting</value></simple>
-		<simple name="ProgramScript" type="string"><value>test.ops</value></simple>	
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
 	</struct>
 </properties>
