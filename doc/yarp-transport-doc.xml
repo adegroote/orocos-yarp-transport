@@ -7,13 +7,18 @@
   <authorinitials>clc</authorinitials>
   <title>The YARP transport for Orocos RTT</title>
   <copyright>
-    <year>2011</year>
+    <year>2011-2012</year>
     <holder>Onera, the French Aerospace Lab</holder>
   </copyright>
   <revhistory>
      <revision>
+        <revnumber>1.1</revnumber>
+        <date>June 7th, 2012</date>
+        <revremark>Update to YARP 2.15, toolchain-2.5. Minor update in testing and doc.</revremark>
+     </revision>
+       <revision>
         <revnumber>1.0</revnumber>
-        <date>29 June 2011</date>
+        <date>June 29th, 2011</date>
         <revremark>First documentation for the YARP transport, compliant with Orocos toolchain-2.4.</revremark>
      </revision>
   </revhistory>
@@ -36,20 +41,24 @@ The YARP transport for Orocos provides a Communication framework to connect port
 <section><title>Caveats</title>
 <itemizedlist>
 <listitem><para>
-The YARP transport is NOT real-time (even used to connect ports in the same process); However, it will not break the realtimeness or your real-time components (except is you resize your dynamic size arrays, see <xref linkend="types"/>).</para></listitem>
+The YARP transport is NOT real-time (even used to connect ports in the same process); However, it will not break the realtimeness 
+or your real-time components (except if you resize your dynamic size arrays, see <xref linkend="types"/>).</para></listitem>
 <listitem><para>
-The YARP transport uses the <function>boost::serialize</function> function to (de)compose types and map them into YARP bottles; this behavior is not suited to big data that would typically be sent as binary data.</para></listitem>
+The YARP transport uses the <function>boost::serialize</function> function to (de)compose types and map them into YARP bottles; 
+this behavior is not suited to big data that would typically be sent as binary data.</para></listitem>
 </itemizedlist>
 </section>
 
 <section><title>Requirements and installation</title>
 <para>
-The only requirement is to install both the Orocos toolchain and YARP. The privileged installation setup uses <command>autoproj</command> to manage YARP and the YARP transport dependencies.
+The only requirement is to install both the Orocos toolchain and YARP. The privileged installation setup uses 
+<command>autoproj</command> to manage YARP and the YARP transport dependencies.
 </para>
 
 <section><title>Using Autoproj</title>
 <para>
-If you have installed your Orocos environment using Autoproj, you can directly ask Autoproj to also manage the installation of YARP and the YARP transport. Edit your <filename>$OROCOS_ROOT/autoproj/manifest</filename> file and add :
+If you have installed your Orocos environment using Autoproj, you can directly ask Autoproj to also manage the
+installation of YARP and the YARP transport. Edit your <filename>$OROCOS_ROOT/autoproj/manifest</filename> file and add :
 </para>
 <itemizedlist>
 <listitem><para>in the <function>package_sets</function> section:
@@ -65,14 +74,16 @@ layout:
   - yarp-transport
   </programlisting>
 </para></listitem>
-<listitem><para>if YARP is already installed on your system and you do not want Autoproj to download and install it on your Orocos install tree, in the <function>ignore_packages</function> section:
+<listitem><para>if YARP is already installed on your system and you do not want Autoproj to download and install it on your 
+Orocos install tree, in the <function>ignore_packages</function> section:
   <programlisting>
 ignore_packages:
-  - libyarp
+  - yarp
   </programlisting>
 </para></listitem>
 </itemizedlist>
-<para>Then just <prompt>autoproj update</prompt> and <prompt>autoproj build yarp-transport</prompt> will download, build and install the YARP transport and its dependencies.</para>
+<para>Then just <prompt>autoproj update</prompt> and <prompt>autoproj build yarp-transport</prompt> will download, 
+build and install the YARP transport and its dependencies.</para>
 </section>
 
 <section><title>Manual installation</title>
@@ -81,7 +92,6 @@ YARP installation instructions can be found at <ulink url="http://eris.liralab.i
 It is recommended to build YARP with the following options:
 <screen>
 cmake . -DCREATE_SHARED_LIBRARY=ON \
-  -DCREATE_YARPSERVER3=ON \
   -DCREATE_GUIS=ON
 </screen>
 The YARP transport can be downloaded from gitorious:
@@ -95,13 +105,16 @@ The <command>cmake</command> magic should find RTT and YARP and build the transp
 
 <section><title>All what to know about YARP</title>
 <para>
-YARP stands for Yet Another Robot Platform. YARP supports building a robot control system as a collection of programs communicating in a peer-to-peer way, with a family of connection types (tcp, udp, multicast, local, MPI, mjpg-over-http, XML/RPC, tcpros, ...) that can be swapped in and out to match your needs.
+YARP stands for Yet Another Robot Platform. YARP supports building a robot control system as a collection of 
+programs communicating in a peer-to-peer way, with a family of connection types (tcp, udp, multicast, local, 
+MPI, mjpg-over-http, XML/RPC, tcpros, ...) that can be swapped in and out to match your needs.
 A complete YARP documentation with tutorials can be found at <ulink url="http://eris.liralab.it/yarpdoc"/>.
 </para>
 
 <section><title>YARP network</title>
 <para>
-YARP is tipically useful to manage data flows between components, located on different machines, running different OSes, and using different protocols.
+YARP is tipically useful to manage data flows between components, located on different machines, running different OSes,
+and using different protocols.
 <xref linkend="yarpnet"/> shows the YARP network of such an example.
 
 <figure id="yarpnet">
@@ -365,18 +378,17 @@ target_link_libraries(myrobotdata-yarp-plugin yarp-transport-${OROCOS_TARGET})
 <para>
 Two test cases are provided in the <filename>testing</filename> folder of the YARP transport sources. The first case is an intra-process transport defined in an XML file. To launch it, go to the <filename>testing</filename> directory, and follow the steps:
 <synopsis>
-[in terminal A] yarpserver3
-[in terminal B] deployer-gnulinux -linfo -s helloworld_yarp.xml
-  Deployer [R]> test.start()
+[in terminal A] yarpserver
+[in terminal B] deployer -linfo -s test.ops
 </synopsis>
 Files <filename>helloworld_yarp.xml</filename> and <filename>test.ops</filename> give examples of use of the YARP transport.
 </para>
 <para>
 The second case is an inter-process transport defined in two XML files. To launch it, go to the <filename>testing</filename> directory, and follow the steps:
 <synopsis>
-[in terminal A] yarpserver3
-[in terminal B] deployer-gnulinux -linfo -s helloworld_A.xml
-[in terminal C] deployer-gnulinux -linfo -s helloworld_B.xml
+[in terminal A] yarpserver
+[in terminal B] deployer -linfo -s helloworld_A.xml
+[in terminal C] deployer -linfo -s helloworld_B.xml
 [in terminal B]
   Deployer [S]> Hello.the_results.write("Hello Yarp!")
 [in terminal C]
