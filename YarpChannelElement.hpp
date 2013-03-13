@@ -65,7 +65,7 @@ public:
 		gethostname(prefix, sizeof(hostname)-sizeof(char));
 		hostname[0] = '/';
 		setenv("YARP_PORT_PREFIX", hostname, 0);
-		std::cout << "YARP_PORT_PREFIX variable is " << getenv("YARP_PORT_PREFIX") << std::endl;
+		//std::cout << "YARP_PORT_PREFIX variable is " << getenv("YARP_PORT_PREFIX") << std::endl;
 		std::stringstream namestr;
 		namestr << '/' << port->getInterface()->getOwner()->getName()
 				<< '/' << port->getName();
