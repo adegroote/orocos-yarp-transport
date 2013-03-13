@@ -234,12 +234,15 @@ The use of a transport in Orocos is done through the definition of a <classname>
 <para>
 When you define a YARP stream for your port, the YARP transport creates a new YARP port, whose name follows the expression:
 <cmdsynopsis sepchar="">
-  <command>/
-  <replaceable>host_name</replaceable>/
+  <command>
+  <replaceable>prefix</replaceable>/
   <replaceable>component_name</replaceable>/
   <replaceable>port_name</replaceable>/
   </command>
 </cmdsynopsis>
+The prefix is automatically inserted by YARP from the YARP_PORT_PREFIX environment variable.
+If this variable is unset, the YARP transport sets it to /hostname. 
+
 Using topics will allow to have an automatic connection of YARP ports: each port is connected to the corresponding topic, leading to a persistent connection into the YARP network. I.e., ports publishing or subscribing to the topic are all connected peer to peer by the YARP server.
 </para>
 <para>

@@ -21,6 +21,8 @@
 #ifndef _YARP_BOTTLE_TRANSPORTER_HPP_
 #define _YARP_BOTTLE_TRANSPORTER_HPP_
 
+#include <cstring>
+
 #include <rtt/types/TypeTransporter.hpp>
 #include <rtt/base/ChannelElement.hpp>
 #include <rtt/Port.hpp>
@@ -58,11 +60,15 @@ public:
 			throw std::runtime_error(error.str());
 		}
 		// Create the Yarp port name
+		char* prefix = hostname;
+		prefix++;
+		gethostname(prefix, sizeof(hostname)-sizeof(char));
+		hostname[0] = '/';
+		setenv("YARP_PORT_PREFIX", hostname, 0);
+		std::cout << "YARP_PORT_PREFIX variable is " << getenv("YARP_PORT_PREFIX") << std::endl;
 		std::stringstream namestr;
-		gethostname(hostname, sizeof(hostname));
-		namestr << '/' << hostname << '/'
-				<< port->getInterface()->getOwner()->getName() << '/'
-				<< port->getName();
+		namestr << '/' << port->getInterface()->getOwner()->getName()
+				<< '/' << port->getName();
 		// Open the Yarp port
 		if (!yarp_port.open(namestr.str().c_str())) {
 			std::stringstream error;

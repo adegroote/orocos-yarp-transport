@@ -2,10 +2,11 @@
 #include <rtt/TaskContext.hpp>
 #include <rtt/Port.hpp>
 #include <rtt/ConnPolicy.hpp>
-#include <orocos/rtt-transport-yarp/YarpTemplateProtocol.hpp>
-#include <orocos/rtt-transport-yarp/YarpTransport.hpp>
 #include <rtt/os/main.h>
+
 #include "Foo.hpp"
+#include "../YarpTemplateProtocol.hpp"
+#include "../YarpTransport.hpp"
 
 using namespace RTT;
 using namespace RTT::types;
