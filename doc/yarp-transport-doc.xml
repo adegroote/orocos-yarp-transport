@@ -238,6 +238,7 @@ When you define a YARP stream for your port, the YARP transport creates a new YA
   <replaceable>prefix</replaceable>/
   <replaceable>component_name</replaceable>/
   <replaceable>port_name</replaceable>/
+  <replaceable>in|out</replaceable>
   </command>
 </cmdsynopsis>
 The prefix is automatically inserted by YARP from the YARP_PORT_PREFIX environment variable.

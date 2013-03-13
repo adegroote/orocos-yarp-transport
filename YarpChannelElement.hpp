@@ -68,7 +68,8 @@ public:
 		//std::cout << "YARP_PORT_PREFIX variable is " << getenv("YARP_PORT_PREFIX") << std::endl;
 		std::stringstream namestr;
 		namestr << '/' << port->getInterface()->getOwner()->getName()
-				<< '/' << port->getName();
+				<< '/' << port->getName()
+				<< '/' << (is_sender ? "out" : "in");
 		// Open the Yarp port
 		if (!yarp_port.open(namestr.str().c_str())) {
 			std::stringstream error;
