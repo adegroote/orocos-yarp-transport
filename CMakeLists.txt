@@ -22,11 +22,6 @@ include_directories(${YARP_INCLUDE_DIRS})
 # Defines the orocos_* cmake macros
 include(${OROCOS-RTT_USE_FILE_PATH}/UseOROCOS-RTT.cmake)
 
-# Enable testing option
-option(ENABLE_TESTING "Enable testing")
-if(ENABLE_TESTING)
-	enable_testing()
-endif()
 
 # YARP transport
 include_directories(transport/)
@@ -37,10 +32,25 @@ target_link_libraries( yarp-transport ${OROCOS-RTT_LIBRARIES} ${YARP_LIBRARIES})
 orocos_service( yarp-service service/Yarp-service.cpp )
 
 # Test file
+option(ENABLE_TESTING "Enable testing")
 if(ENABLE_TESTING)
+	enable_testing()
 	orocos_executable(FooTest testing/FooTest.cpp)
 	target_link_libraries(FooTest ${PROJECT_NAME})
 	add_test(YarpTransport FooTest-${OROCOS_TARGET})
+endif()
+
+# Doc
+option(BUILD_DOC "Build doc (requires docbook)")
+if(BUILD_DOC)
+	find_program(DOCBOOK docbook2pdf)
+	if (DOCBOOK-NOTFOUND)
+		message(STATUS "docbook2pdf not found, cannot build doc")
+	else(DOCBOOK-NOTFOUND)
+		add_custom_target(doc ALL ${DOCBOOK} ${CMAKE_SOURCE_DIR}/doc/yarp-transport-doc.xml)
+		install(FILES ${CMAKE_BINARY_DIR}/yarp-transport-doc.pdf 
+			DESTINATION share/doc/yarp-transport)
+	endif(DOCBOOK-NOTFOUND)
 endif()
 
 # Additional headers (not in typekit):
