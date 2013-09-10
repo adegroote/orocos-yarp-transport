@@ -1,5 +1,24 @@
+import("yarp-transport")
 loadService("Deployer", "print")
-kickStart("helloworld_yarp.xml")
+loadService("Deployer", "yarp")
+
+loadComponent("cout", "OCL::HMIConsoleOutput")
+cout.start()
+
+loadComponent("Hello", "OCL::HelloWorld")
+Hello.start()
+
+loadComponent("World", "OCL::HelloWorld")
+World.start()
+
+var ConnPolicy conn
+conn.type = BUFFER
+conn.size = 2
+yarp.add_topic(conn, "HelloTopic")
+connect("Hello.the_results", "World.the_buffer_port", conn)
+
+Deployer.setPeriod(1)
+Deployer.start()
 
 program test {
 	var string s
