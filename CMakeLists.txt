@@ -48,7 +48,8 @@ else()
 	set( LIB_NAME ${PROJECT_NAME})
 endif()
 message( "Building library ${PROJECT_NAME}" )
-add_library( ${PROJECT_NAME} SHARED YarpTransport.cpp )
+include_directories(transport/)
+add_library( ${PROJECT_NAME} SHARED transport/YarpTransport.cpp )
 set_target_properties( ${PROJECT_NAME} PROPERTIES
 	OUTPUT_NAME ${LIB_NAME}
 	INSTALL_RPATH_USE_LINK_PATH 1
@@ -72,7 +73,11 @@ endif()
 #
 # Installs in the include/orocos/transports/ directory
 #
-orocos_install_headers( YarpTransport.hpp YarpTemplateProtocol.hpp YarpChannelElement.hpp yarp_bottle_archive.hpp ) # ...you may add multiple header files
+orocos_install_headers( transport/YarpTransport.hpp 
+						transport/YarpTemplateProtocol.hpp
+						transport/YarpChannelElement.hpp 
+						transport/yarp_bottle_archive.hpp
+						)
 
 #
 # Generates and installs our package. Must be the last statement such
