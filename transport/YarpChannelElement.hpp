@@ -60,16 +60,21 @@ public:
 			throw std::runtime_error(error.str());
 		}
 		// Create the Yarp port name
-		char* prefix = hostname;
-		prefix++;
-		gethostname(prefix, sizeof(hostname)-sizeof(char));
-		hostname[0] = '/';
-		setenv("YARP_PORT_PREFIX", hostname, 0);
-		//std::cout << "YARP_PORT_PREFIX variable is " << getenv("YARP_PORT_PREFIX") << std::endl;
 		std::stringstream namestr;
-		namestr << '/' << port->getInterface()->getOwner()->getName()
-				<< '/' << port->getName()
-				<< '/' << (is_sender ? "out" : "in");
+		if (!policy.name_id.empty()) {
+			namestr << policy.name_id;
+		}
+		else {
+			char* prefix = hostname;
+			prefix++;
+			gethostname(prefix, sizeof(hostname)-sizeof(char));
+			hostname[0] = '/';
+			setenv("YARP_PORT_PREFIX", hostname, 0);
+			//std::cout << "YARP_PORT_PREFIX variable is " << getenv("YARP_PORT_PREFIX") << std::endl;
+			namestr << '/' << port->getInterface()->getOwner()->getName()
+					<< '/' << port->getName()
+					<< '/' << (is_sender ? "out" : "in");
+		}
 		// Open the Yarp port
 		if (!yarp_port.open(namestr.str().c_str())) {
 			std::stringstream error;
@@ -84,15 +89,6 @@ public:
 		// Attach callback if receiver
 		if (!is_sender)
 			yarp_port.useCallback(*this);
-		// Connect the port to the topic
-		if (!policy.name_id.empty()) {
-			std::stringstream topic;
-			topic << "topic://" << policy.name_id;
-			if (is_sender)
-				yarpNet().connect(yarp_port.getName(), topic.str().c_str());
-			else
-				yarpNet().connect(topic.str().c_str(), yarp_port.getName());
-		}
 	}
 
 	virtual bool inputReady() {

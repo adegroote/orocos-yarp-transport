@@ -7,10 +7,17 @@
   <authorinitials>clc</authorinitials>
   <title>The YARP transport for Orocos RTT</title>
   <copyright>
-    <year>2011-2013</year>
+    <year>2011-2014</year>
     <holder>Onera, the French Aerospace Lab</holder>
   </copyright>
   <revhistory>
+     <revision>
+        <revnumber>2.1</revnumber>
+        <date>March 27th, 2014</date>
+        <revremark>Fix access to the YARP server by using a sigleton (by Arnaud Degroote @isae.fr)
+        	Add support for serialization of fixed size arrays (by Arnaud Degroote @isae.fr)
+        	The 'name_id' ConnPolicy member is used to define the port name (previously was a topic to connect to)</revremark>
+     </revision>
      <revision>
         <revnumber>2.0</revnumber>
         <date>September 10th, 2013</date>
@@ -241,7 +248,7 @@ Before connecting ports via YARP, you must launch the YARP server with command <
 The use of a transport in Orocos is done through the definition of a <classname>ConnPolicy</classname>. A <classname>ConnPolicy</classname> specifies the properties of the connection. Some of these properties are related to the transport, and the YARP transport is configured by:</para>
 <itemizedlist>
 <listitem><para><varname>transport</varname> that must be set to <token>89</token>, that is the YARP transport id;</para></listitem>
-<listitem><para><varname>name_id</varname> that is used to define the <emphasis>topic</emphasis> to which the port will publish or subscribe to.</para></listitem>
+<listitem><para><varname>name_id</varname> that is used to define the <emphasis>port name</emphasis>.</para></listitem>
 </itemizedlist>
 
 <para>
@@ -256,7 +263,13 @@ When you define a YARP stream for your port, the YARP transport creates a new YA
 </cmdsynopsis>
 The prefix is automatically inserted by YARP from the YARP_PORT_PREFIX environment variable.
 If this variable is unset, the YARP transport sets it to /hostname. 
+</para>
 
+<para>
+If you have given a 'name_id' to you policy, it will be used instead to name the port.
+</para>
+
+<!--
 Using topics will allow to have an automatic connection of YARP ports: each port is connected to the corresponding topic, leading to a persistent connection into the YARP network. I.e., ports publishing or subscribing to the topic are all connected peer to peer by the YARP server.
 </para>
 <para>
@@ -268,7 +281,7 @@ If you do not want to use topics (beceause you want to manually manage connectio
 <arg><replaceable>carrier</replaceable></arg>
 </cmdsynopsis>
 Carriers commonly supported by YARP are <varname>tcp</varname>, <varname>udp</varname>, <varname>mcast</varname> (multicast), <varname>shmem</varname> (shared memory) and <varname>text</varname> (through a text file).
-</para>
+</para-->
 </section>
 
 

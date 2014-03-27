@@ -22,6 +22,8 @@ class YarpService : public Service
 {
 public:
 	YarpService(TaskContext* c) : Service("yarp", c) {
+		this->addOperation("port", &YarpService::topic, this)
+			.doc("create a ConnPolicy configured with a YARP port name");
 		this->addOperation("topic", &YarpService::topic, this)
 			.doc("create a ConnPolicy configured with a YARP topic");
 		this->addOperation("add_topic", &YarpService::add_topic, this)
