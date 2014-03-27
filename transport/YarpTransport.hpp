@@ -30,6 +30,6 @@
 
 #include <yarp/os/all.h>
 
-extern yarp::os::Network yarpNet;
+yarp::os::Network& yarpNet();
 
 #endif

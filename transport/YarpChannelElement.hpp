@@ -49,7 +49,7 @@ public:
 		newdata(false), send(is_sender), read_sample(
 				new RTT::internal::ValueDataSource<T>) {
 		// Check Network connection
-		if (!yarpNet.checkNetwork()) {
+		if (!yarpNet().checkNetwork()) {
 			std::stringstream error;
 			error
 					<< "Yarp network not available. You could check your Yarp configuration with:\n";
@@ -89,9 +89,9 @@ public:
 			std::stringstream topic;
 			topic << "topic://" << policy.name_id;
 			if (is_sender)
-				yarpNet.connect(yarp_port.getName(), topic.str().c_str());
+				yarpNet().connect(yarp_port.getName(), topic.str().c_str());
 			else
-				yarpNet.connect(topic.str().c_str(), yarp_port.getName());
+				yarpNet().connect(topic.str().c_str(), yarp_port.getName());
 		}
 	}
 

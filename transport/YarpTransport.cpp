@@ -67,6 +67,11 @@ struct YarpLibPlugin : public RTT::types::TransportPlugin {
 
 };
 
-yarp::os::Network yarpNet;
+yarp::os::Network& yarpNet()
+{
+	std::cerr << "calling yarpNet()" << std::endl;
+	static yarp::os::Network net;
+	return net;
+}
 	
 ORO_TYPEKIT_PLUGIN(YarpLibPlugin)

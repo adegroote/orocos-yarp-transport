@@ -81,8 +81,15 @@ public:
 
 	template<class T>
 	void load_override(const boost::serialization::array<T> &t, int) {
-		boost::serialization::array<T> tmp(t.address(), t.count());
-		*this >> tmp;
+        yarp::os::Bottle* b = m_bottle.get(0).asList();
+		if (b && b->size()  == t.count()) {
+			T* ptr = t.address();
+			yarp_bottle_iarchive v(*b);
+			for (size_t i = 0; i< t.count(); ++i) 
+				v >> *ptr++;
+		} else {
+			std::cerr << "invalid input " << std::endl;
+		}
 	}
 
 	template<class T>
