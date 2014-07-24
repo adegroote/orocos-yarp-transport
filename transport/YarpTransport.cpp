@@ -28,6 +28,8 @@
 struct YarpLibPlugin : public RTT::types::TransportPlugin {
 
 	bool registerTransport(std::string name, RTT::types::TypeInfo* ti) {
+		yarp::os::Network::init();
+
 		if ( name == "array" )
 			return ti->addProtocol(ORO_YARP_PROTOCOL_ID, new YarpTemplateProtocol< std::vector<double> >() );
 		if ( name == "bool" )
@@ -67,11 +69,4 @@ struct YarpLibPlugin : public RTT::types::TransportPlugin {
 
 };
 
-yarp::os::Network& yarpNet()
-{
-	std::cerr << "calling yarpNet()" << std::endl;
-	static yarp::os::Network net;
-	return net;
-}
-	
 ORO_TYPEKIT_PLUGIN(YarpLibPlugin)

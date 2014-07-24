@@ -49,7 +49,7 @@ public:
 		newdata(false), send(is_sender), read_sample(
 				new RTT::internal::ValueDataSource<T>) {
 		// Check Network connection
-		if (!yarpNet().checkNetwork()) {
+		if (! yarp::os::Network::checkNetwork()) {
 			std::stringstream error;
 			error
 					<< "Yarp network not available. You could check your Yarp configuration with:\n";
