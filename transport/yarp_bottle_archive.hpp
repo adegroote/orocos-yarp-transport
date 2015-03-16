@@ -87,6 +87,7 @@ public:
 			yarp_bottle_iarchive v(*b);
 			for (size_t i = 0; i< t.count(); ++i) 
 				v >> *ptr++;
+			m_bottle = m_bottle.tail();
 		} else {
 			std::cerr << "invalid input " << std::endl;
 		}
